@@ -1,10 +1,10 @@
-import { useState , useEffect } from 'react'
-import './index.css'
+import { useState, useEffect } from "react";
+import "./index.css";
 
 import { ethers } from "ethers";
 import tokenAbi from "./MyTokenABI.json";
 
-const contractAddress = "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512";
+const contractAddress = "Deployed_Contract_Address";
 
 function App() {
 
@@ -15,30 +15,42 @@ function App() {
 
   const connectWallet = async () => {
 
-    const [selectedAccount] = await window.ethereum.request({ method: 'eth_requestAccounts' });
+    if (window.ethereum) {
+      const [selectedAccount] = await window.ethereum.request({
+        method: "eth_requestAccounts",
+      });
+      setAccount(selectedAccount);
+    }
 
-    setAccount(selectedAccount);
   };
 
   const getBalance = async () => {
 
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const contract = new ethers.Contract(contractAddress, tokenAbi.abi, provider);
+    if (!account) return;
+
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const contract = new ethers.Contract(
+      contractAddress,
+      tokenAbi.abi,
+      provider
+    );
 
     const rawBalance = await contract.balanceOf(account);
+    setBalance(ethers.formatUnits(rawBalance, 18));
 
-    setBalance(ethers.utils.formatUnits(rawBalance, 18));
   };
 
   const sendTokens = async () => {
 
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const signer = await provider.getSigner();
     const contract = new ethers.Contract(contractAddress, tokenAbi.abi, signer);
 
     try {
-      const tx = await contract.transfer(recipient, ethers.utils.parseUnits(amount, 18));
+      const tx = await contract.transfer(
+        recipient,
+        ethers.parseUnits(amount, 18)
+      );
       await tx.wait();
       alert("Tokens sent!");
       getBalance();
@@ -46,6 +58,7 @@ function App() {
       console.error(err);
       alert("Error sending tokens");
     }
+    
   };
 
   useEffect(() => {
@@ -90,4 +103,4 @@ function App() {
   );
 }
 
-export default App
+export default App;

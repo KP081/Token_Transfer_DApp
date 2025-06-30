@@ -2,9 +2,9 @@ import { useState , useEffect } from 'react'
 import './index.css'
 
 import { ethers } from "ethers";
-import tokenAbi from "../../artifacts/contracts/ERC20.sol/MyToken.json";
+import tokenAbi from "./MyTokenABI.json";
 
-const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+const contractAddress = "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512";
 
 function App() {
 

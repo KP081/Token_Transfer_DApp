@@ -4,7 +4,7 @@ import "./index.css";
 import { ethers } from "ethers";
 import tokenAbi from "./MyTokenABI.json";
 
-const contractAddress = "Deployed_Contract_Address";
+const CONTRACT_ADDRESS = import.meta.env.VITE_CONTRACT_ADDRESS;
 
 function App() {
 
@@ -30,7 +30,7 @@ function App() {
 
     const provider = new ethers.BrowserProvider(window.ethereum);
     const contract = new ethers.Contract(
-      contractAddress,
+      CONTRACT_ADDRESS,
       tokenAbi.abi,
       provider
     );
@@ -44,7 +44,7 @@ function App() {
 
     const provider = new ethers.BrowserProvider(window.ethereum);
     const signer = await provider.getSigner();
-    const contract = new ethers.Contract(contractAddress, tokenAbi.abi, signer);
+    const contract = new ethers.Contract(CONTRACT_ADDRESS, tokenAbi.abi, signer);
 
     try {
       const tx = await contract.transfer(
